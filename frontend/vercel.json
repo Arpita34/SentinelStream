@@ -1,12 +1,8 @@
 {
     "rewrites": [
         {
-            "source": "/api/auth/(.*)",
-            "destination": "https://sentinelstream-backend.onrender.com/api/auth/$1"
-        },
-        {
-            "source": "/api/data/(.*)",
-            "destination": "https://another-backend.example.com/api/data/$1"
+            "source": "/api/(.*)",
+            "destination": "https://sentinelstream-backend.onrender.com/api/$1"
         },
         {
             "source": "/(.*)",
@@ -19,7 +15,7 @@
             "headers": [
                 {
                     "key": "Content-Security-Policy",
-                    "value": "default-src 'self'; connect-src 'self' https://sentinelstream-backend.onrender.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://res.cloudinary.com; video-src 'self' https://res.cloudinary.com;"
+                    "value": "default-src 'self'; connect-src 'self' https://sentinelstream-backend.onrender.com wss://sentinelstream-backend.onrender.com https://*.vercel.app; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com; video-src 'self' blob: https://res.cloudinary.com; media-src 'self' blob: https://res.cloudinary.com;"
                 }
             ]
         }
