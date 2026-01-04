@@ -28,10 +28,12 @@ const httpServer = http.createServer(app); // Create HTTP server
 // Initialize Socket.io
 initSocket(httpServer);
 
-const PORT = process.env.PORT || 5000;
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+// Remove trailing slash if present to prevent CORS mismatches
+const normalizedOrigin = frontendUrl.replace(/\/$/, '');
 
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: normalizedOrigin,
     credentials: true
 }));
 app.use(express.json());
