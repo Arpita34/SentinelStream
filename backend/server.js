@@ -29,11 +29,25 @@ const httpServer = http.createServer(app); // Create HTTP server
 initSocket(httpServer);
 
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-// Remove trailing slash if present to prevent CORS mismatches
-const normalizedOrigin = frontendUrl.replace(/\/$/, '');
+// Support both versions (with and without trailing slash) for safety
+const origins = [
+    frontendUrl.replace(/\/$/, ''),
+    frontendUrl.replace(/\/$/, '') + '/'
+];
+
+console.log('📡 CORS Configured for:', origins);
 
 app.use(cors({
-    origin: normalizedOrigin,
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+        if (origins.indexOf(origin) !== -1 || origin === 'http://localhost:5173') {
+            callback(null, true);
+        } else {
+            console.warn(`🔒 CORS blocked request from: ${origin}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 app.use(express.json());

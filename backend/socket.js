@@ -3,9 +3,15 @@ import { Server } from 'socket.io';
 let io;
 
 export const initSocket = (server) => {
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const allowedOrigins = [
+        frontendUrl.replace(/\/$/, ''),
+        frontendUrl.replace(/\/$/, '') + '/'
+    ];
+
     io = new Server(server, {
         cors: {
-            origin: "http://localhost:5173",
+            origin: allowedOrigins,
             methods: ["GET", "POST"],
             credentials: true
         }
