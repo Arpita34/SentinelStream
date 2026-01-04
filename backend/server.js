@@ -1,76 +1,81 @@
-import dotenv from 'dotenv';
-// 1. Initialize dotenv at the absolute top before any other imports
+import dotenv from "dotenv";
 dotenv.config();
 
-import express from 'express';
-import http from 'http';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { initSocket } from './socket.js';
+import express from "express";
+import http from "http";
+import mongoose from "mongoose";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import { initSocket } from "./socket.js";
 
-// 2. Initialize Cloudinary config BEFORE importing routes
-import './config/cloudinary.js';
+import "./config/cloudinary.js";
 
-// Now import routes (they will use the already-configured Cloudinary)
-import authRoutes from './routes/auth.js';
-import videoRoutes from './routes/videos.js';
-import userRoutes from './routes/users.js';
-import settingsRoutes from './routes/settings.js';
+import authRoutes from "./routes/auth.js";
+import videoRoutes from "./routes/videos.js";
+import userRoutes from "./routes/users.js";
+import settingsRoutes from "./routes/settings.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const httpServer = http.createServer(app); // Create HTTP server
+const httpServer = http.createServer(app);
 
-// Initialize Socket.io
+// ✅ Init Socket.io
 initSocket(httpServer);
 
 const PORT = process.env.PORT || 5000;
-const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-// Support both versions (with and without trailing slash) for safety
-const origins = [
-    frontendUrl.replace(/\/$/, ''),
-    frontendUrl.replace(/\/$/, '') + '/'
-];
 
-console.log('📡 CORS Configured for:', origins);
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    "http://localhost:5173"
+].filter(Boolean); // removes undefined
 
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl)
-        if (!origin) return callback(null, true);
-        if (origins.indexOf(origin) !== -1 || origin === 'http://localhost:5173') {
-            callback(null, true);
-        } else {
-            console.warn(`🔒 CORS blocked request from: ${origin}`);
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true
-}));
+console.log("📡 Allowed CORS origins:", allowedOrigins);
+
+// ✅ Express CORS
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            if (!origin) return callback(null, true);
+
+            if (allowedOrigins.some(o => origin.startsWith(o))) {
+                return callback(null, true);
+            }
+
+            console.warn("❌ Blocked by CORS:", origin);
+            callback(new Error("Not allowed by CORS"));
+        },
+        credentials: true
+    })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-app.use('/api/auth', authRoutes);
-app.use('/api/videos', videoRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/settings', settingsRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/videos", videoRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/settings", settingsRoutes);
+
+// ✅ Health check (important for Render)
+app.get("/", (req, res) => {
+    res.json({ status: "Backend running 🚀" });
+});
 
 const startServer = async () => {
     try {
         await mongoose.connect(process.env.MONGODB_URI);
-        console.log('✅ Connected to MongoDB');
+        console.log("✅ Connected to MongoDB");
 
         httpServer.listen(PORT, () => {
-            console.log(`🚀 Server running on http://localhost:${PORT}`);
+            console.log(`🚀 Server listening on port ${PORT}`);
         });
     } catch (error) {
-        console.error('❌ Server startup error:', error);
+        console.error("❌ Server startup error:", error);
         process.exit(1);
     }
 };
