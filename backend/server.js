@@ -28,6 +28,7 @@ const httpServer = http.createServer(app); // Create HTTP server
 // Initialize Socket.io
 initSocket(httpServer);
 
+const PORT = process.env.PORT || 5000;
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 // Support both versions (with and without trailing slash) for safety
 const origins = [
