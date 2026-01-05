@@ -1,21 +1,11 @@
 {
-    "rewrites": [
-        {
-            "source": "/api/(.*)",
-            "destination": "https://sentinelstream-backend.onrender.com/api/$1"
-        },
-        {
-            "source": "/(.*)",
-            "destination": "/index.html"
-        }
-    ],
     "headers": [
         {
             "source": "/(.*)",
             "headers": [
                 {
                     "key": "Content-Security-Policy",
-                    "value": "default-src 'self'; connect-src 'self' https://sentinelstream-backend.onrender.com wss://sentinelstream-backend.onrender.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com; media-src 'self' blob: https://res.cloudinary.com;"
+                    "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://sentinelstream-backend.onrender.com; img-src 'self' data: blob:;"
                 }
             ]
         }
