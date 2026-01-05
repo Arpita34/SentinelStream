@@ -15,7 +15,7 @@
             "headers": [
                 {
                     "key": "Content-Security-Policy",
-                    "value": "default-src 'self'; connect-src 'self' https://sentinelstream-backend.onrender.com wss://sentinelstream-backend.onrender.com https://*.vercel.app; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com; video-src 'self' blob: https://res.cloudinary.com; media-src 'self' blob: https://res.cloudinary.com;"
+                    "value": "default-src 'self'; connect-src 'self' https://sentinelstream-backend.onrender.com wss://sentinelstream-backend.onrender.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com; media-src 'self' blob: https://res.cloudinary.com;"
                 }
             ]
         }
