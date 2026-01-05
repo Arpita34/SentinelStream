@@ -40,7 +40,7 @@ app.use(
         origin: (origin, callback) => {
             if (!origin) return callback(null, true);
 
-            if (allowedOrigins.some(o => origin.startsWith(o))) {
+            if (allowedOrigins.includes(origin)) {
                 return callback(null, true);
             }
 
@@ -50,7 +50,7 @@ app.use(
         credentials: true
     })
 );
-
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
