@@ -62,8 +62,13 @@ app.use("/api/users", userRoutes);
 app.use("/api/settings", settingsRoutes);
 
 // ✅ Health check (important for Render)
-app.get("/", (req, res) => {
-    res.json({ status: "Backend running 🚀" });
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "Backend running 🚀" });
+});
+
+// ✅ Catch-all for API 404s
+app.use("/api/*", (req, res) => {
+    res.status(404).json({ message: "API route not found" });
 });
 
 const startServer = async () => {
