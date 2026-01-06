@@ -25,7 +25,7 @@ const httpServer = http.createServer(app);
 // ✅ Init Socket.io
 initSocket(httpServer);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 const allowedOrigins = [
     process.env.FRONTEND_URL,
